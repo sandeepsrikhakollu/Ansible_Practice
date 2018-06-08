@@ -1,0 +1,34 @@
+---
+-  hosts: loadbalancer
+   vars:
+     my_var: sandeep
+   tasks:
+     - name: Set our own facts
+       set_fact: 
+          our_fact=Ansible Rocks!
+          ansible_distribution="{{ansible_distribution | upper}}"
+
+     - name: Show our_fact
+       debug: msg={{ our_fact }}
+
+#     - name: Pause 10 seconds after the above command
+#       pause: seconds=10
+
+     - name: Prompt user to verify before continue
+       pause:
+         prompt: Please check the webserver is running, press enter to continue
+
+     - name: Show ansible_distribution
+       debug: msg={{ansible_distribution}}
+
+#     - name: Assemble conf.d with sshd_config
+#      assemble: src=/root/ansible/conf.d dest=sshd_config
+
+     - name: Add hots
+       add_host: name=new gropus=database
+
+     - name: Ping to the newly added hosts
+       ping:
+
+     - name: Fetch module
+       fetch: src=/var/www/html/index.nginx-debian.html dest=tmp/new.html

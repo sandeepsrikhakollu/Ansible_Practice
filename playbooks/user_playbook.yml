@@ -1,0 +1,44 @@
+---
+-  hosts: loadbalancer
+   tasks:
+     - name: Creating users
+       user: name={{item.key}} comment={{item.value.full_name}}
+       with_dict:
+         sandeep:
+           full_name: Sandeep Srikhakollu
+         Rama:
+           full_name: Rama Reddy
+         Mohan:
+           full_name: Mohan Lalith
+       register: users
+
+     - name: Create authorized key
+       authorized_key: user=sandeep key={{item}}
+       with_file:
+         - /root/.ssh/id_rsa.pub
+
+     - name: Create sequence directories
+       file: dest=/root/sequence_{{ item }} state=absent
+       with_sequence: start=0 end=100 stride=10
+
+     - name: Create some test users
+       user: name={{ item }} state=absent
+       with_sequence: start=0 end=12 format=testuser%02x
+
+     - name: Create random directory
+       file: dest=/root/{{ item }} state=directory
+       with_random_choice:
+         - "sandeep"
+         - "rama"
+         - "mohan"
+         - "naveen"
+
+     - name: Generate random number
+       script: random.sh
+       register: result
+       retries: 5
+       until: result.stdout.find("10") != -1
+
+     - name: Waiting to finish the task randomly
+       command: /bin/sleep {{10|random}}
+      

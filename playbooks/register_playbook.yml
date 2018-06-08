@@ -1,0 +1,12 @@
+---
+-  hosts: webserver
+   tasks: 
+     - name: Register module
+       command: hostname -s
+       register: hostname_output
+       when:
+         - ansible_distribution == "Ubuntu"
+         - ansible_distribution_major_version | int>=16 
+
+     - name: Show hostname_output
+       debug: var=hostname_output.stdout

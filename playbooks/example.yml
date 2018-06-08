@@ -1,0 +1,77 @@
+---
+-  hosts: localhost
+   gather_facts: true
+
+   vars_prompt:
+     - name: username
+       prompt: what is your name
+       private: false
+       register: response
+
+     - name: password
+       prompt: Enter your password
+       private: true
+
+   vars_files:
+     - external_vars.yml
+
+#   vars:
+#     motd: "Welcome to Ansible Tutorial in  \n"
+#     example_key: example_value
+#     dict:
+#       dict_key: dict_value
+#     named_list:
+#       - item1
+#       - item2
+#       - item3
+#       - item4
+#     inline_named_list:
+#       [item5, item6,item7, item8]
+
+   tasks:
+     - name: Test vars_prompt
+       debug: msg="{{username}}"
+
+     - name: Password validation
+       debug: msg="{{password}}"
+
+     - name: Test hostvars with asible fact and collect ansible port, dot notation
+       debug: msg="{{ [ansible_hostname].ansible_port | default('') }}"
+ 
+     - name: Configure a MOTD         
+       copy: content={{ motd }} dest=/etc/motd
+       when: (ansible_distribution=="Ubuntu" and ansible_distribution_version == "16.04") or (ansible_distribution=="CentOS")
+       notify: motd changed
+
+     - name: Test dictionary value
+       debug: msg="{{example_key}}"
+  
+     - name: Test dict
+       debug: msg="{{dict}}"
+
+     - name: Test dict with dot notation
+       debug: msg="{{dict.dict_key}}"
+
+     - name: Test dict with bracket notation
+       debug: msg="{{dict['dict_key']}}"
+
+     - name: Display named list
+       debug: msg="{{ named_list }}"
+   
+     - name: Display named list with dot notation
+       debug: msg="{{ named_list.1 }}"
+
+     - name: Display named list with bracket notation
+       debug: msg="{{ named_list[3] }}"
+
+     - name: Display inline named list
+       debug: msg="{{ inline_named_list }}"
+
+     - name: Show Ip Address
+       debug: msg="{{ ansible_default_ipv4}}"
+   
+   handlers:
+     - name: motd changed
+       debug: 
+         msg: The motd was changed
+  

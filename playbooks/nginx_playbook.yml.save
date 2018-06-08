@@ -1,0 +1,27 @@
+---
+-  hosts: loadbalancer
+   tasks:
+     - name: Install EPEL
+       yum: name=epel-release state=latest update_cache=yes
+       when: ansible_distribution == "CentOS"
+
+     - name: Install Nginx
+       package: name=nginx state=latest update_cache=yes
+
+     - name: Install Patch
+       yum: name=patch state=latest update_cache=yes
+       when: ansible_distribution == "CentOS"
+
+     - name: Check nginx is started
+       service: name=nginx state=started enabled=yes
+
+     - name: Create sites-avaliable directory
+       file: path=/etc/nginx/sites-available state=directory
+
+     - name: Create sites-enabled directory
+       file: /etc/nginx/sites-enabled state=directory
+
+     - name: Copy index.html file to sites-available directory
+       copy: src=/root/ansible/index.html dest=/etc/nginx/sites-available
+
+     - name: Create symolic link from sites-available directory to sites-enabled directory

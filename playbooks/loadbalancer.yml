@@ -1,0 +1,30 @@
+---
+-  hosts: loadbalancer
+   become: true
+   tasks:
+     - name: Install tools
+       apt: name={{item}} state=present update_cache=yes
+       with_items:
+         - python-httplib2
+     
+     - name: Install nginx
+       apt: name=nginx state=present update_cache=yes
+
+     - name: Ensure nginx started
+       service: name=nginx state=started enabled=yes
+
+#     - name: Configure nginx site
+#       copy: src=/root/ansible/index.html dest=/etc/nginx/sites-available/demo mode=0755
+#       notify: restart nginx
+
+#     - name: Deactivate default nging site
+#       file: path=/etc/nginx/sites-enabled/default state=present
+#       notify: restart nginx
+
+#     - name: Activate demo nginx sites
+#       file: src=/etc/nginx/sites-available/demo dest=/etc/nginx/sites-enabled/demo state=link
+#       notify: restart nginx
+ 
+#   handlers:
+#     - name: restart nginx
+#       service: name=nginx state=restarted

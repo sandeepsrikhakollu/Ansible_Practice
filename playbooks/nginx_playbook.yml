@@ -1,0 +1,56 @@
+---
+-  hosts: loadbalancer
+   tasks:
+     - name: Install EPEL
+       yum: name=epel-release state=latest update_cache=yes
+       when: ansible_distribution == "CentOS"
+
+     - name: Install Nginx
+       package: name=nginx state=latest update_cache=yes
+
+     - name: Install Patch
+       yum: name=patch state=latest update_cache=yes
+       when: ansible_distribution == "CentOS"
+
+#     - name: Check nginx is started
+#       service: name=nginx state=started enabled=yes
+
+     - name: Create sites-avaliable directory
+       file: path=/etc/nginx/sites-available state=directory
+
+     - name: Create sites-enabled directory
+       file: path=/etc/nginx/sites-enabled state=directory
+
+     - name: Copy index.html file to sites-available directory
+       copy: src=/root/ansible/index.html dest=/etc/nginx/sites-available/default
+
+     - name: Create symbolic link between sites-available and sites-enabled
+       file: src=/etc/nginx/sites-available/default dest=/etc/nginx/sites-enabled/default state=link
+
+     - name: Create nginx/html directory if required
+       file: path=/usr/share/nginx/html state=directory
+
+     - name: Enable firewall
+       shell: ufw enable
+
+     - name: Allow firewall connection
+       shell: ufw allow 80
+
+     - name: Check firewall status
+       shell: ufw status verbose
+
+     - name: Open firewall for nginx
+       ufw: policy=allow proto=any state=enabled
+       notify: Reload ufw firewall
+
+     - name: Restart nginx
+       service: name=nginx state=restarted
+       notify: Check HTTP Service
+
+   handlers:
+     - name: Reload ufw firewall
+       ufw: state=reloaded
+
+     - name: Check HTTP Service
+       uri: url=http://{{ansible_default_ipv4.address}}
+       status_code: 200

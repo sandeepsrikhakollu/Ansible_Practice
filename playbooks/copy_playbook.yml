@@ -1,0 +1,12 @@
+---
+-  hosts: webserver
+   tasks:
+     - name: Configure MOTD message
+       copy: content="Welcome to {{ item }} Linux - Ansible Rocks!" dest=/etc/motd
+       with_items: ['Ubuntu', 'CentOS']
+       when: ansible_distribution == item
+       notify: MOTD message
+
+   handlers:
+     - name: MOTD message
+       debug: msg="The MOTD has been changed"

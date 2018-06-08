@@ -1,0 +1,12 @@
+---
+motd: "Welcome to Ansible Tutorial in  \n"
+example_key: example_value
+dict:
+  dict_key: dict_value
+named_list:
+  - item
+  - item2
+  - item3
+  - item4
+inline_named_list:
+   - [ item5, item6, item7, item8]

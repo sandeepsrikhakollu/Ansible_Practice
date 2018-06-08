@@ -1,0 +1,19 @@
+---
+-  hosts: database
+   tasks:
+     - name: Install mysqldb
+       apt: name={{item}} state=present update_cache=yes
+       with_items:
+         - python-mysqldb
+
+     - name: Install mysql-server
+       apt: name=mysql-server state=present update_cache=yes
+
+     - name: Ensure mysql-server is started
+       service: name=mysql state=started enabled=yes
+
+     - name: Create demo database
+       mysql_db: name=demo state=present
+
+     - name: Craete demo user
+       mysql_user: name=demo password=demo priv=demo.*:ALL host='%' state=present

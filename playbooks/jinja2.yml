@@ -1,0 +1,65 @@
+---
+-  hosts: all
+   become: true
+   tasks:
+#     - name: Ansible Jinga2 If
+#       debug: 
+#         msg: >
+#                {# If the hostname is ip-172-31-28-91, include a message -#}
+#                {% if ansible_hostname == "ip-172-31-28-91" -%}
+#                     Host name is: {{ ansible_hostname }}
+#                {% endif %}
+
+     - name:  Ansible if else 
+       debug:
+         msg: >
+                 {% if example_variable is defined -%}
+                     example variable defined
+                 {% else -%}
+                    example variable not defined
+                 {% endif %}
+
+     - name: Ansible for loop
+       debug:
+         msg: >
+                 {% for entry in ansible_all_ipv4_address | default('') -%}
+                     IP Address entry {{ loop.index }} = {{ entry }}
+                  {% endfor %}
+
+     - name: Ansible for range
+       debug:
+         msg: >
+                 {% for entry in range(1, 11) -%}
+                    {{ entry }}
+                 {% endfor %}
+
+#     - name: Ansible for range and break
+#       debug:
+#         msg: >
+#                 {% for entry in range(10, 0, -1) -%}
+#                     {% if entry == 5 -%}
+#                        {% break %}
+#                     {% endif -%}
+#                     {{ entry }}
+#                 {% endfor %}	
+
+
+     - name: Ansible for range and continue
+       debug:
+         msg: >
+                 {% for entry in range(10, 0, -1) -%}
+                     {% if entry is odd -%}
+                        {% continue %}
+                     {% endif -%}
+                     {{ entry }}
+                 {% endfor %}
+
+     - name: Ansible jinja2 filters
+       debug:
+         msg: >
+                 {{ [1, 2, 3, 4, 5] | min }}
+                 {{ [1, 2, 3, 4, 5] | max }}
+                 {{ [1, 2, 3, 2, 4, 1, 6, 3, 4, 5] | unique }}
+                 {{ [1, 2, 3, 4, 5] | difference([3, 4, 5, 6]) }}
+                 {{ ['Sandeep', 'Rama', 'Mohan'] | random }}
+                 {{ "http://docs.ansible.com" | urlsplit('hostname') }}

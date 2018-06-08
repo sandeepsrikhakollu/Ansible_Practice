@@ -1,0 +1,16 @@
+[webserver]
+18.217.65.132 ansible_become=true ansible_become_password=sandeep@325 ansible_user=root ansible_passwd=sandeep@325
+
+
+[loadbalancer]
+18.217.76.186 ansible_become=true ansible_become_password=sandeep@325 ansible_user=root ansible_passwd=sandeep@325
+#18.191.116.217 ansible_become=true ansible_become_password=sandeep@325 ansible_user=root ansible_passwd=sandeep@325
+
+[database]
+13.58.70.219 ansible_become=true ansible_become_password=sandeep@325 ansible_user=root ansible_passwd=sandeep@325
+
+[controlserver]
+18.219.238.240 ansible_become=true ansible_become_password=sandeep@325 ansible_user=root ansible_passwd=sandeep@325
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
